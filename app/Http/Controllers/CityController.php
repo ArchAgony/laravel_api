@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use Exception;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class CityController extends Controller
@@ -15,21 +17,23 @@ class CityController extends Controller
     public function create(Request $request)
     {
         //
-        try {
-            City::create([
-                'name' => $request->input('name')
-            ]);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|unique:cities'
+        ]
+    );
+        if ($validator -> fails()) {
             return response()->json([
-                'message' => 'New city has been created.'
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'message' => 'The name field is required.',
-                'error' => [
-                    'name' => 'The name field is required'
-                ]
-            ]);
+                'errors' => $validator->errors(),
+            ]
+            );
         }
+        $user = City::create([
+            'name' => $request->name
+        ]);
+        return response()->json([
+            'message' => 'New city has been created',
+            'data' => $user
+        ]);
     }
 
     /**

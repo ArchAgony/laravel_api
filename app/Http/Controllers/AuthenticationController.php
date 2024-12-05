@@ -22,7 +22,7 @@ class AuthenticationController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 //kalau mau pake ini nanti pesan errornya jadi 2
-                'message' => 'Email has been registered.',
+                // 'message' => 'Email has been registered.',
                 'errors' => $validator->errors(),
             ], 422);
         }
